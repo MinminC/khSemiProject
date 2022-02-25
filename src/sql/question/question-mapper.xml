@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="selectQ-list">
+SELECT 
+		ASK_NO,
+		TO_CHAR(ASK_DATE,'YYYY/MM/DD') ASK_DATE,
+		ASK_TYPE, 
+		ASK_TITLE,  
+		COMMENT_DATE,
+		MEMBER_NO
+	FROM 
+		ASK
+	WHERE
+		MEMBER_NO = ?
+	ORDER BY 
+		ASK_NO DESC
+</entry>
+<entry key="selectQ">
+	SELECT 
+		TO_CHAR(ASK_DATE,'YYYY/MM/DD') ASK_DATE,
+		ASK_TYPE, 
+		ASK_TITLE,
+		ASK_CONTENT,  
+		COMMENT_DATE,
+		ASK_COMMENT,
+		MEMBER_NO
+	FROM 
+		ASK
+	WHERE
+		ASK_NO = ?
+</entry>
+<entry key="selectQAttachment">
+	SELECT
+		FILE_NO, 
+		ORIGIN_NAME,
+		CHANGE_NAME,
+		FILE_PATH
+	FROM 
+		A_ATTACHMENT
+	WHERE
+		ASK_NO = ?
+</entry>
+<entry key="insertQuestion">
+	INSERT 
+		INTO ASK
+				(
+				 ASK_NO, 
+				 ASK_TYPE, 
+				 ASK_TITLE, 
+				 ASK_CONTENT, 
+				 MEMBER_NO
+				)
+		VALUES 
+				(
+				 SEQ_ASK_NO.NEXTVAL,
+				 ?, 
+				 ?, 
+				 ?,
+				 ?
+				)
+</entry>
+<entry key="insertQAttachment">
+	INSERT 
+		INTO A_ATTACHMENT
+						 (
+						  FILE_NO, 
+						  ORIGIN_NAME, 
+						  CHANGE_NAME, 
+						  FILE_PATH, 
+						  ASK_NO
+						 )
+		VALUES 
+				(
+				 SEQ_FILE_NO.NEXTVAL, 
+				 ?, 
+				 ?, 
+				 ?, 
+				 SEQ_ASK_NO.CURRVAL
+				)
+</entry>
+<entry key="questionListAll">
+	SELECT 
+		* 
+	FROM 
+		(
+		 SELECT 
+		 		ROWNUM QNUM, 
+		 		A.*
+		 FROM 
+		 	(
+		 	 SELECT 
+		 	 		ASK_NO, 
+		 	 		ASK_DATE, 
+		 	 		ASK_TITLE, 
+		 	 		ASK_COMMENT, 
+		 	 		MEMBER_ID
+			 FROM 
+					ASK
+			 JOIN 
+					MEMBER 
+			 USING
+				(
+				 MEMBER_NO
+				)
+			 ORDER BY 
+				ASK_NO DESC
+			) A
+		) 
+	WHERE 
+			QNUM BETWEEN ? AND ?
+</entry>
+<entry key="selectListCount">
+	SELECT 
+			COUNT(*) COUNT
+	FROM 
+			ASK
+</entry>
+<entry key="addComment">
+	UPDATE 
+			ASK
+	SET
+			COMMENT_DATE = SYSDATE,
+			ASK_COMMENT = ?
+	WHERE
+			ASK_NO = ?
+</entry>
+</properties>

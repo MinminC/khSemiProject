@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>영화관 관련 쿼리문</comment>
+	
+	<entry key="selectListCount">
+		SELECT COUNT(*) COUNT
+		  FROM THEATER
+	</entry>
+	
+	<entry key="selectList">
+		SELECT *
+			FROM (
+				SELECT ROWNUM RNUM, A.*
+				FROM (
+						SELECT *
+						 FROM THEATER
+						ORDER 
+		 				   BY THEATER_NO ASC) A)
+				WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="selectTheater">
+		SELECT * 
+		  FROM THEATER
+		 WHERE THEATER_NO = ?
+	</entry>
+	
+	<entry key="aSelectList">
+		SELECT *
+			FROM (
+				SELECT ROWNUM RNUM, A.*
+				FROM (
+						SELECT *
+						 FROM THEATER
+						ORDER 
+		 				   BY THEATER_NO DESC) A)
+				WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	<entry key="aSelectTheater">
+		SELECT T.THEATER_NO, THEATER_NAME, AUDITORIUM_NUM, T.SEAT_NUM,
+				ADDRESS, PHONE, TRAFFIC, LOCATION, PARKING, THEATER_IMG,
+				UPLOAD_DATE, AUDITORIUM_NO, AUDITORIUM_NAME, A.SEAT_NUM AUDITORIUMSEATNUM
+		FROM THEATER T
+		LEFT JOIN AUDITORIUM A ON(T.THEATER_NO = A.THEATER_NO)
+		WHERE T.THEATER_NO = ?
+		ORDER BY AUDITORIUM_NO ASC
+	</entry>
+	
+	<entry key="insertTheater">
+		INSERT INTO THEATER(THEATER_NO, THEATER_NAME, AUDITORIUM_NUM, SEAT_NUM, ADDRESS, PHONE, TRAFFIC, LOCATION, PARKING, THEATER_IMG, UPLOAD_DATE)
+		VALUES(SEQ_THE_NO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE)
+			   
+	</entry>
+	
+	<entry key="insertAuditorium">
+		INSERT INTO AUDITORIUM (AUDITORIUM_NO, AUDITORIUM_NAME, SEAT_NUM, THEATER_NO)
+		VALUES(SEQ_AU_NO.NEXTVAL, ?, ?, SEQ_THE_NO.CURRVAL)
+	</entry>
+	
+	<entry key="updateTheater">
+		UPDATE THEATER
+		SET THEATER_NAME = ? ,
+			AUDITORIUM_NUM = ? ,
+			SEAT_NUM = ? ,
+			ADDRESS = ? ,
+			PHONE = ? ,
+			TRAFFIC = ? ,
+			LOCATION = ? ,
+			THEATER_IMG = ? ,
+			UPLOAD_DATE = SYSDATE
+		WHERE THEATER_NO = ?
+	</entry>
+	
+	<entry key="updateAuditorium">
+		INSERT INTO AUDITORIUM (AUDITORIUM_NO, AUDITORIUM_NAME, SEAT_NUM, THEATER_NO)
+		VALUES(SEQ_AU_NO.NEXTVAL, ?, ?, ?)
+	</entry>
+	
+	<entry key="deleteTheater">
+		DELETE FROM THEATER
+		WHERE THEATER_NO = ?
+	</entry>
+	
+	<entry key="aSelectAuditorium">
+		SELECT * 
+		    FROM (
+		            SELECT ROWNUM RNUM, A.*
+		            FROM (
+		                    SELECT *
+		                    FROM AUDITORIUM
+		                    ORDER BY AUDITORIUM_NO DESC) A
+		            WHERE AUDITORIUM_NAME = '1관'
+		        )
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="deleteAuditorium">
+		DELETE FROM AUDITORIUM
+		WHERE THEATER_NO = ?
+	</entry>
+	
+	<entry key="selectAuditorium">
+		SELECT *
+		FROM AUDITORIUM
+		WHERE THEATER_NO = ?
+		ORDER BY AUDITORIUM_NO ASC
+	</entry>
+	
+	
+	
+	
+	
+	
+</properties>

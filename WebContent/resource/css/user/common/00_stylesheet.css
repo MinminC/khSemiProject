@@ -1,0 +1,158 @@
+div {
+  box-sizing: border-box;
+}
+#wrap {
+  min-width: 1000px;
+  margin: auto;
+}
+/* header영역 */
+.link {
+  text-decoration: none;
+  color: black;
+}
+
+#header {
+  background-color: white;
+  position: relative;
+}
+
+#header .logo_area {
+  position: relative;
+  height: 180px;
+  width: 1000px;
+  margin: auto;
+  background-color: white;
+}
+
+.logo_bg {
+  position: relative;
+  margin: auto;
+  height: 100%;
+  background-color: white;
+}
+
+.logo_bg img {
+  height: 170px;
+  display: block;
+  margin: auto;
+}
+
+#header .service_area {
+  position: absolute;
+  top: 12px;
+  right: 27px;
+}
+
+#navi_area {
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+} 
+
+#navi_area .group_nav {
+  position: relative;
+  width: 1000px;
+  margin: auto;
+}
+
+.list_navi {
+  font-size: 20px;
+  font-weight: 600;
+  list-style: none;
+  display: block;
+ 
+}
+
+.nav_item {
+  display: inline-block;
+  width: 18%;
+  text-align: center;
+  position: relative;
+}
+
+.nav:hover {
+  color: rgb(13, 71, 161);
+}
+
+/* container영역 */
+#container {
+  width: 1000px;
+  margin: auto;
+}
+
+/* footer영역 */
+#footer {
+  height: 150px;
+  background-color: #fafbfc;
+  border-top: 1px solid lightgray;
+}
+
+.footer_inner {
+  width: 1000px;
+  margin: auto;
+}
+
+.corp_area {
+  width: 340px;
+  height: 10%;
+  border-bottom: 1px solid lightgray;
+}
+
+.disc_area {
+  height: 90%;
+}
+
+.list_crop {
+  list-style: none;
+  display: block;
+  padding: 0px 0px 0px 20px;
+  margin: 0px;
+}
+
+.corp_item {
+  display: inline-block;
+  font-weight: bold;
+  color: gray;
+}
+
+.foot_logo {
+  width: 20%;
+  float: left;
+}
+
+.foot_logo > img {
+  height: 100px;
+  margin-left: 5px;
+}
+
+.crop_info {
+  height: 100%;
+  color: gray;
+}
+
+
+
+.list_navi{
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+	
+}
+.list_navi a{
+	display: block;
+	
+}
+.list_navi > li > ul {
+	list-style-type: none;
+	padding: 0px;
+	display: none;  
+	
+}  
+.list_navi > li > a:hover+ul {
+	display: block;  
+}
+
+.list_navi > li > ul:hover {
+	display: block;  
+}
+
+

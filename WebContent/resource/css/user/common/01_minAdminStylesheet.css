@@ -1,0 +1,24 @@
+﻿/* 공지사항, FAQ */
+
+html, body{
+	height:100%;
+	margin:0;
+	padding:0;
+}
+
+#admin-menu, #container{
+	display:inline-block;
+}
+#admin-menu{
+	width:240px;
+	height:100%;
+	background:rgb(13,71, 161);
+}
+#admin-menu *{
+	height:100%;
+}
+
+.in-form li{
+	list-style: none;
+	display: inline-block;
+}

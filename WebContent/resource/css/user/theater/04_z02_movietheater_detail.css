@@ -1,0 +1,86 @@
+    div {
+        /* border: 1px solid black; */
+        display: block;
+    } 
+    /* ------------------------------------------------ */
+    /* container영역 */
+    #container {
+        width: 1000px;
+        height: auto;
+        margin: auto;
+    }
+    #container>div{
+    	margin-bottom: 40px;
+    }
+    #content_1{
+        width: 100%;
+        height: 10%;
+        text-align: center;
+    }
+    #content_1>h1{
+        text-align: center;
+        font-weight: bolder;
+        font-size: 30px;
+        color: rgb(13, 71, 161);
+        margin-top: 40px;
+    }
+    #content_2{
+        width: 100%;
+        height: 20%;
+    }
+    #content_2 div{
+        float: left;
+    }
+    #theater_back{
+        width: 60%;
+        height: 230px;
+        background-color: rgb(231, 231, 231);
+        margin-left: 20%;
+        border-radius: 15px;
+    }
+    #theater_pic{
+        width: 50%;
+        height: 100%;
+    }
+    #theater_pic>img{
+        width: 210px;
+        height: 170px;
+        margin-left: 65px;
+        margin-top: 10%;
+        
+    }
+    #theater_info{
+        width: 50%;
+        height: 100%;
+        padding-left: 15px;    
+        padding-top: 30px;    
+    }
+    #theater_info>p{
+        font-size: 16px;
+        line-height: 29px;
+    }#content_3>div{
+    	font-size: 18px;
+    }#content_4>div{
+    	font-size: 18px;
+    }
+    #content_5>div{
+    	font-size: 18px;
+    }
+    #content_4>#map{
+    	width:900px;
+    	height:350px;
+    	margin: auto;
+    }
+    
+	.info>ul>li{
+		list-style: none;
+		line-height:32px;
+	}
+	
+
+
+
+
+
+
+    

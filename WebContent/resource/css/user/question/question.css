@@ -1,0 +1,80 @@
+@charset "UTF-8";
+
+div {
+	box-sizing: border-box;
+}
+
+.outer {
+	width: 800px;
+	height: 800px;
+	margin: auto;
+	margin-top: 50px;
+	margin-bottom: 100px;
+}
+
+/* subNavigation영역 */
+.sub_nav {
+	float: left;
+	width: 300px;
+	height: auto;
+}
+
+.title {
+	font-weight: 600;
+	margin-left: 20px;
+}
+
+.discription {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+.list-area {
+	width: 800px;
+	border-top: 2px solid black;
+	border-bottom: 2px solid black;
+	border-collapse: collapse;
+	text-align: center;
+	margin-left: 20px;
+}
+
+.list-area>thead {
+	border-bottom: 1px solid gray;
+	background-color: lightgray;
+	height: 40px;
+	font-size: 15px;
+}
+
+.list-area>tbody>tr {
+	height: 40px;
+}
+
+.Qform th, td {
+	border: 1px solid lightgray;
+	padding: 5px;
+}
+
+.Qform td {
+	text-align: left;
+}
+
+
+.Qlist-data:hover {
+	cursor: pointer;
+	background: rgb(189, 226, 238);
+}
+
+.Qform-btn {
+	float: right;
+	position: relative;
+}
+
+.Qcontent {
+	text-align: left;
+	height: 400px;
+	padding-left: 5px;
+}
+
+.pic-disc {
+	color: black;
+}

@@ -1,0 +1,319 @@
+/* content */
+
+.select-container {
+  margin-top: 40px;
+}
+
+.select-wrapper {
+  width: 1000px;
+  background-color: white;
+  margin: 0 auto;
+  border: 2px solid lightgray;
+}
+
+.select-title {
+  background-color: rgb(13, 61, 171);
+  color: white;
+  font-size: 25px;
+  font-weight: bolder;
+  text-align: center;
+  padding: 10px;
+}
+
+.select-seat-container {
+  display: flex;
+  /* align-items: center; */
+  border-bottom: 2px solid #dddddd;
+}
+
+.select-seat-number-container {
+  flex-grow: 1;
+  border-right: 1px solid #dddddd;
+  display: flex;
+}
+
+.select-seat-number-wrapper {
+  padding: 15px 0 20px 20px;
+  flex-grow: 1;
+}
+
+.select-seat-ul {
+  display: flex;
+  list-style: none;
+}
+
+.select-seat-ul > li {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #dddddd;
+  text-align: center;
+  font-weight: bold;
+  /* line-height: 15px; */
+  /* padding: 5px; */
+  padding: 2px;
+}
+
+.select-seat-ul > li:hover {
+  color: white;
+  background-color: #222222;
+  cursor: pointer;
+}
+
+.select-seat-ul-active {
+  color: white;
+  background-color: #222222;
+}
+
+.select-seat-ul > li:not(:first-child) {
+  margin-left: 5px;
+}
+
+.select-seat-information {
+  flex-grow: 1;
+  padding: 15px 0 20px 20px;
+}
+
+.select-seat {
+  display: flex;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.select-seat:not(:first-child) {
+  margin-top: 12px;
+}
+
+.select-seat-age {
+  width: 45px;
+  text-align: left;
+  margin-top: 14px;
+}
+
+.reserve-number-wrapper {
+  flex-grow: 1;
+  padding-top: 15px;
+  border-left: 1px solid #dddddd;
+  text-align: center;
+}
+
+.reserve-number {
+  margin-top: 20px;
+  font-size: 34px;
+  font-weight: bold;
+}
+
+.selected-movie {
+  font-size: 20px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.select-seat-information-wrapper {
+  display: flex;
+}
+
+.select-theater-place {
+  font-size: 12px;
+}
+
+.select-theater-place:not(:last-child) {
+  width: 55px;
+  border-right: 1px solid #dddddd;
+}
+
+.select-theater-place:last-child {
+  width: 150px;
+  /* border-right: 1px solid #dddddd; */
+}
+
+.select-theater-place:not(:first-child) {
+  margin-left: 12px;
+}
+
+.select-theater-date {
+  /*  font-size: 18px;
+    margin-top: 8px;
+    font-weight: bold; */
+  display: flex;
+}
+
+.select-theater-date > div {
+  font-size: 18px;
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+.theater-time {
+  margin-left: 5px;
+}
+
+.remain-seats {
+  margin-left: 3px;
+  color: rgba(255, 0, 0, 0.6);
+  font-weight: bold;
+}
+
+.selected-seats-wrapper {
+  margin-top: 5px;
+  text-align: left;
+}
+
+.selected-seats {
+  font-size: 13px;
+  word-spacing: 2px;
+  margin-left: 20px;
+}
+
+.selected-seats-title {
+  color: black;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.ticket-price-wrapper {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+.ticket-price-wrapper > div {
+  font-weight: bold;
+}
+.ticket-price-title {
+  font-size: 13px;
+}
+
+.ticket-price {
+  margin-left: 47px;
+  font-size: 20px;
+}
+
+.reserve-button {
+  border: 0;
+  outline: 0;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 0;
+}
+
+.poster {
+  width: 110px;
+  height: 150px;
+  border: 1px solid black;
+  position: absolute;
+  z-index: 1000;
+  top: 220px;
+  right: 110px;
+}
+
+.seat-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  /*justify-content: center;*/
+}
+.seat-state {
+  height: 30px;
+  width: 500px;
+  margin-left: 20px;
+  z-index: 2000;
+  position: absolute;
+}
+.state {
+  float: left;
+}
+.seat-type {
+  height: 30px;
+  width: 30px;
+  float: left;
+  border-radius: 8px;
+}
+
+.type1 {
+  background-color: rgb(13, 61, 171);
+  color: white;
+}
+.type2 {
+  background-color: rgb(68, 68, 68);
+  color: black;
+}
+.type3 {
+  background-color: darkgray;
+  color: darkgray;
+}
+.seat-disc {
+  float: left;
+  height: 30px;
+  width: 100px;
+  padding-left: 5px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.screen-view {
+  width: 140px;
+  color: black;
+  padding-top: 40px;
+  font-size: 40px;
+  font-weight: bolder;
+  text-align: center;
+  margin: 0 auto 30px auto;
+  letter-spacing: 4px;
+}
+
+.seat-wrapper {
+  width: 900px;
+  height: 600px;
+  margin: auto;
+}
+
+.seat {
+  width: 30px;
+  height: 30px;
+}
+
+.seat {
+  font-size: 13px;
+  background-color: #555555;
+  color: white;
+  border: 1px solid rgba(255, 0, 0, 0.6);
+}
+
+.seat:hover {
+  background-color: red;
+  color: white;
+  cursor: pointer;
+}
+
+.seat:active {
+  background-color: red;
+  color: white;
+}
+
+.clicked {
+  background-color: red;
+  color: white;
+}
+
+.seatButtonWrapper {
+  text-align: center;
+}
+
+.seatButtonWrapper > input {
+  width: 30px;
+  height: 30px;
+}
+
+.left-margin {
+  margin-left: 30px;
+}
+
+.right-margin {
+  margin-right: 30px;
+}
+
+.top-margin {
+  margin-top: 30px;
+}

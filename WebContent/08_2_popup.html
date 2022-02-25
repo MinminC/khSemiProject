@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>팝업 문구</title>
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+</head>
+<body>
+	<h1>투표하기!</h1>
+	<br>
+	<!--  
+	<script>
+		function goPop(){
+			slef.close();
+			opener.location.href="<%=contextPath %>/list.vot";
+		}
+	</script>
+	-->
+	<a href="javascript:opener.document.location.href='http://localhost:8222/cinemaHeaven/list.vot';window.close();">
+	<img src='resource/image/vote22.jpg' border=0>
+
+	<p align="right">
+	<!-- <input type="button" value="닫 기" class="btn btn-sm btn-secondary" onclick="close();"> -->
+	<input type="button" value="이동 후 닫기" class="btn btn-sm btn-primary" onclick="moveClose();">
+	</p>
+</body>
+</html>

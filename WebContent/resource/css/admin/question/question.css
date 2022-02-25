@@ -1,0 +1,16 @@
+#container {
+  margin-left: 200px;
+  padding: 30px;
+}
+.question-list-wrap {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  text-align: center;
+}
+.question-list-wrap thead {
+  background-color: rgb(238, 237, 237);
+}
+
+.qlist:hover {
+  background-color: rgb(158, 226, 223);
+}

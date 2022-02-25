@@ -1,0 +1,95 @@
+@charset "UTF-8";
+.member-area, .terms-area{
+		width: 400px;
+		margin: 0 auto;
+    	max-width: 700px;
+    	min-width: 460px;
+	}
+	.terms{
+		overflow:scroll; 
+		width:500px; 
+		height:150px; 
+		padding:10px; 
+		
+	}
+	.checkBox_text{
+		font-size: 11px;
+	}
+	.logo_bg {
+	position: relative;
+	margin: auto;
+	height: 100%;
+	background-color: white;
+	
+	}
+	.logo_bg img {
+	height: 170px;
+	display: block;
+	margin: auto;
+	}
+	.member-area>fieldset>form>ul>li{
+        list-style: none;
+        text-align: left;
+        margin: 7px 0px;
+    }
+    
+    .member_input{
+    	width: 400px;
+    	height: 40px;
+    }
+    .id-area{
+    	display: flex;
+    }
+    .member-area{
+    	font-size: 20px;
+    }
+    .id-text{
+    	font-size : 15px;
+    }
+    .birth_input{
+    	width: 130px;
+    	height: 40px;
+    }
+    .member_btn, #enroll_btn, #update_btn{
+    	background: rgb(13, 71, 161);
+    	color : white;
+    }
+    .id_check_btn, #update_btn{
+    	width: 120px;
+    	height: 40px;
+    }
+    .interest_div{
+    	width: 120px;
+    }
+    label{
+    	font-size: 20px;
+    	font-weight: bold;
+    	padding-top: 2px;
+    }
+    ::placeholder {
+    	font-size: 13px;
+    }
+    .error_text{
+    	font-size: 13px;
+    }
+    #cancle{
+    	background : white;
+    	color : rgb(13, 71, 161);
+    }
+    .terms{
+    	font-size: 9px;
+    }
+    .pwssword_input{
+    	width: 450px;
+    }
+    .delete_btn {
+    	width: 400px;
+    	background-color: red;
+    	color : white;
+    }
+    .delete{
+    	width: 100%;
+    	background-color: red;
+    	color : white;
+    }
+    

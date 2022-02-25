@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="selectListCountAll">
+	SELECT 
+			COUNT(TICKET_NO) COUNT
+	FROM 
+			TICKET
+</entry>
+<entry key="selectListCount">
+	SELECT 
+			COUNT(TICKET_NO) COUNT
+	FROM 
+			TICKET
+	JOIN 
+			PAYMENT 
+	USING
+		 (
+		  PAY_NO
+		 )
+	WHERE 
+			MEMBER_NO = ? 
+	AND 
+			PAY_STATUS = 'Y'
+</entry>
+<entry key="selectMovieName">
+	SELECT  DISTINCT
+			MNO, 
+			MNAME, 
+			RATE  
+		FROM 
+			MOVIE
+        JOIN 
+        	SCHEDULE S 
+        	USING
+        		(MNO)
+</entry>
+<!-- selectMovieName에 추가할 것,,
+WHERE RUN_SCH > SYSDATE 
+-->
+<entry key="selectMovie">
+	SELECT 
+			MNO, 
+			MNAME, 
+			GENRE, 
+			RTIME, 
+			RATE, 
+			STATUS, 
+			TO_CHAR(RUN_SCH,'YYYY-MM-DD HH24:MI:SS') AS 상영시간
+		FROM 
+			MOVIE
+        JOIN 
+        	SCHEDULE S 
+        	USING
+        		(MNO)
+		WHERE 
+			RUN_SCH > SYSDATE
+</entry>
+<!-- 특정 도에 위치한 영화관의 갯수 출력 -->
+<entry key="selectTheaterAll">
+	SELECT 
+			LOCATION, 
+			COUNT(LOCATION) AS COUNT
+		FROM 
+			(
+		 	 SELECT 
+		 			SUBSTR(ADDRESS, 1, INSTR(ADDRESS, ' ')) AS LOCATION
+				FROM 
+					THEATER
+			)
+	GROUP BY 
+			LOCATION
+</entry>
+<!-- 선택한 영화를 상영하는 지역 -->
+<entry key="selectLocation">
+	SELECT 
+			LOCATION, 
+			COUNT(LOCATION) AS COUNT
+	FROM 
+		(
+         SELECT 
+         		SUBSTR
+         			  (
+         			   ADDRESS, 
+         			   1, 
+         			   INSTR(ADDRESS, ' ')
+         			  ) 
+         		AS 
+         			LOCATION
+         FROM 
+         	 (
+         	  SELECT 
+         	  		DISTINCT ADDRESS
+              FROM 
+              		V_MOVIE
+              WHERE 
+              		MNAME = ? 
+             )
+      	)
+	GROUP BY 
+			LOCATION
+</entry>
+<entry key="selectTheater">
+	SELECT 
+		DISTINCT 
+			THEATER_NAME
+	FROM 
+			V_MOVIE
+	WHERE 
+			MNAME = ? 
+	AND 
+		ADDRESS 
+				LIKE ?
+</entry>
+<!-- 회원이 예매한 영화 리스트 -->
+<entry key="selectTicketList">
+SELECT * 
+FROM 
+	(
+	 SELECT ROWNUM RNUM, B.* <!-- 순서 다시 붙이기 -->
+	 FROM 
+		 (
+		  SELECT 
+				SEAT_NO, A.* <!-- 좌석정보와 결제/영화정보 JOIN && 결제 순서, 티켓 번호로 내림차순 -->
+		  FROM SEAT S
+		  JOIN (
+		  		SELECT <!-- 결제정보와 영화정보 JOIN -->
+		 				PAY_NO, 
+		 				RATE, 
+		 				MNO,
+		 				MNAME, 
+		 				TO_CHAR(RUN_SCH, 'YYYY/MM/DD HH:MI:SS') "RESERVE_DATE", 
+		 				AUDITORIUM_NAME, 
+		 				THEATER_NAME, 
+		 				SEAT_PK, 
+		 				TO_CHAR(PAY_DATE, 'YYYY/MM/DD') PAY_DATE, 
+		 				TICKET_NO,
+		 				TICKET_TYPE,
+		 				RTIME
+		 		 FROM PAYMENT
+		 		 JOIN TICKET USING(PAY_NO)
+		 		 JOIN V_MOVIE USING(RUN_NO)
+				 WHERE MEMBER_NO = ?
+		 		 AND PAY_STATUS = 'Y'
+		 		) "A" 
+		  ON (S.SEAT_PK = A.SEAT_PK)
+    	  ORDER BY PAY_NO DESC, TICKET_NO DESC) "B")
+	WHERE RNUM BETWEEN ? AND ?
+</entry>
+<entry key="selectCancleList">
+	SELECT  
+			TO_CHAR(RUN_SCH, 'YYYY/MM/DD') RUN_SCH,
+			MNAME, 
+			THEATER_NAME,
+			A.* <!-- 상영일, 영화명, 상영 극장 -->
+	FROM 
+			V_MOVIE V
+	JOIN
+		(
+		 SELECT 
+		 		PAY_NO, 
+		 		TO_CHAR(PAY_DATE, 'YYYY/MM/DD') PAY_DATE, 
+		 		TICKET_NO, 
+		 		PAYMENT, 
+		 		RUN_NO <!-- 취소일, 취소금액 -->
+		 FROM 
+		 		PAYMENT
+		 JOIN 
+		 		TICKET 
+		 USING (PAY_NO)
+		 WHERE 
+		 		MEMBER_NO = ?
+		 AND 
+		 		PAY_STATUS = 'N'
+		) "A" 
+	ON (A.RUN_NO = V.RUN_NO)
+	WHERE <!-- 상영일 기준 +- 7일 -->
+			ROUND(TO_DATE(SYSDATE, 'YYYY/MM/DD HH24:MI:SS') - TO_DATE(RUN_SCH, 'YYYY/MM/DD HH24:MI:SS')) <![CDATA[ > ]]>= -7 
+	OR 
+			ROUND(TO_DATE(SYSDATE, 'YYYY/MM/DD HH24:MI:SS') - TO_DATE(RUN_SCH, 'YYYY/MM/DD HH24:MI:SS')) <![CDATA[ < ]]>= 7
+</entry>
+<entry key="countTicket">
+	SELECT 
+			COUNT(TICKET_TYPE) COUNT,
+			PAY_NO
+	FROM 
+			TICKET
+	GROUP BY 
+			PAY_NO
+	HAVING 
+			PAY_NO = ?
+</entry>
+<entry key="cancelTicket">
+	UPDATE 
+			PAYMENT 
+	SET 
+			PAY_STATUS='N',
+    		PAY_DATE = SYSDATE 
+	WHERE 
+			PAY_NO = ?
+	AND 
+			MEMBER_NO = ?
+</entry>
+<entry key="ticketListAll">
+	SELECT *
+			FROM (
+			        SELECT ROWNUM RNUM, A.*
+			          FROM (
+							SELECT 
+									PAY_NO, 
+									PAY_STATUS, 
+									PAY_DATE, 
+									PAYMENT, 
+									MEMBER_ID, 
+									RUN_NO, 
+									MNAME, 
+									TICKET_TYPE, 
+									COUNT(PAY_NO) COUNT
+						      FROM 
+						      		PAYMENT 
+						      JOIN 
+						      		TICKET USING(PAY_NO)
+						      JOIN 
+						      		V_MOVIE USING(RUN_NO)
+						      JOIN 
+						      		MEMBER USING(MEMBER_NO)
+						      GROUP BY 
+						      		PAY_NO, 
+						      		PAY_STATUS, 
+						      		PAY_DATE, 
+						      		PAYMENT, 
+						      		MEMBER_ID, 
+						      		RUN_NO, 
+						      		MNAME, 
+						      		TICKET_TYPE
+						      ORDER BY 
+						      		PAY_NO) A)
+	WHERE RNUM BETWEEN ? AND ? 				  
+</entry>
+<entry key="selectTime">
+	SELECT 
+			RUN_NO, 
+			TO_CHAR(RUN_SCH,'YYYY-MM-DD HH24:MI:SS') RUN_SCH, 
+			A_SEAT,
+			(A_SEAT-SOLD) REMAIN, 
+			AUDITORIUM_NAME, 
+			MNAME
+	FROM 
+			V_MOVIE
+	JOIN (
+        	SELECT 
+        			RUN_NO, 
+        			COUNT(RUN_NO) SOLD
+        	FROM 
+        			TICKET
+        	GROUP BY 
+        			RUN_NO
+		 ) USING (RUN_NO)
+	WHERE 
+			MNAME = ?
+	AND 
+			THEATER_NAME = ?
+	AND 
+			RUN_SCH LIKE ?
+</entry>
+<entry key="selectedSeat">
+	SELECT  
+			SEAT_NO
+	FROM 
+			SEAT
+	JOIN 
+			TICKET 
+	USING 
+			(SEAT_PK)
+	WHERE 
+			RUN_NO = ?
+</entry>
+<entry key="selectSeatPK">
+	SELECT 
+			SEAT_PK
+	FROM 
+			V_MOVIE
+	JOIN 
+			SEAT 
+	USING
+			(AUDITORIUM_NO)
+	WHERE 
+			RUN_NO = ? 
+	AND 
+			SEAT_NO = ? 
+</entry>
+<entry key="insertPayment">
+	INSERT INTO 
+				PAYMENT
+					   (
+					   	PAY_NO,
+					   	PAYMENT, 
+					   	MEMBER_NO
+					   )
+	VALUES 
+			(
+			 SEQ_PAY_NO.NEXTVAL,
+			 ?, 
+			 ?
+			)
+</entry>
+<entry key="insertTicket">
+	INSERT INTO 
+				TICKET
+	VALUES 
+			(
+			 SEQ_TIC_NO.NEXTVAL, 
+			 SEQ_PAY_NO.CURRVAL, 
+			 ?, 
+			 ?, 
+			 ?
+			)
+</entry>
+</properties>

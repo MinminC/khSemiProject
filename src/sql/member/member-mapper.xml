@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>회원 쿼리</comment>
+	<entry key="idCheck">
+		SELECT COUNT(*) COUNT FROM MEMBER
+		WHERE MEMBER_ID = ?
+	</entry>
+	<entry key="emailCheck">
+		SELECT COUNT(*) COUNT FROM MEMBER
+		WHERE EMAIL = ?
+	</entry>
+	<entry key="memberDetail">
+		SELECT MEMBER_NO, MEMBER_PWD, MEMBER_ID, MEMBER_NAME, BIRTH, GENDER, EMAIL, PHONE, INTEREST, POINT
+		FROM MEMBER
+		WHERE MEMBER_NO = ? 
+	</entry>
+	<entry key="memberList">
+		SELECT * 
+			FROM ( SELECT ROWNUM RNUM, A.*
+				FROM (SELECT MEMBER_NO, MEMBER_ID, MEMBER_NAME, BIRTH, GENDER, EMAIL, PHONE, MEMBER_STATUS 
+					FROM MEMBER
+					ORDER BY MEMBER_NAME DESC ) A)
+	WHERE RNUM BETWEEN ? AND ?
+    AND MEMBER_NAME LIKE '%' || ? || '%'
+	</entry>
+	<entry key="memberInsert">
+		INSERT INTO MEMBER(MEMBER_NO, MEMBER_ID, MEMBER_PWD, MEMBER_NAME, BIRTH, GENDER, EMAIL, PHONE, INTEREST)
+		VALUES(SEQ_MEM_NO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?)
+	</entry>
+	<entry key="memberUpdate">
+		UPDATE MEMBER
+		SET MEMBER_NAME = ?
+			,MEMBER_PWD = ?
+			,BIRTH = ?
+			,GENDER = ?
+			,EMAIL = ?
+			,PHONE = ?
+			,INTEREST = ?
+		WHERE MEMBER_NO = ?
+	</entry>
+	<entry key="adminDetail">
+		SELECT MEMBER_NO, MEMBER_ID, MEMBER_NAME, EMAIL, PHONE
+		FROM MEMBER
+		WHERE MEMBER_NO = ?
+	</entry>
+	<entry key="memberListCount">
+		SELECT COUNT(*) COUNT 
+		FROM MEMBER
+		WHERE MEMBER_STATUS = 'Y'
+		AND MEMBER_NAME LIKE '%' || ? || '%'
+	</entry>
+	<entry key="adminMemberUpdate">
+		UPDATE MEMBER
+		SET MEMBER_NAME = ?
+			,EMAIL = ?
+			,PHONE = ?
+		WHERE MEMBER_ID = ?
+	</entry>
+	<entry key="memberDelete">
+		UPDATE MEMBER
+		SET MEMBER_STATUS = 'N'
+		WHERE MEMBER_NO = ?
+	</entry>
+	<entry key="memberRemove">
+		UPDATE MEMBER
+		SET MEMBER_STATUS = 'Y'
+		WHERE MEMBER_NO = ?
+	</entry>
+	<entry key="deleteMember">
+		UPDATE MEMBER
+		SET MEMBER_STATUS = 'N'
+		WHERE MEMBER_NO = ?
+		AND MEMBER_PWD = ?
+	</entry>
+</properties>

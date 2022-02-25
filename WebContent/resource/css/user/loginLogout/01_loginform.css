@@ -1,0 +1,148 @@
+    div {
+        /* border: 1px solid black; */
+        display: block;
+    }  
+    /* ------------------------------------------------------------------------ */
+    
+    /* container영역 */
+    #container {
+        width: 1000px;
+        margin: auto;
+        height: 800px;
+        
+        /* border: 1px solid turquoise; */
+    }
+
+    #content_1{
+        width: 100%;
+        height: 20%;
+    }
+    #login{ /*'로그인'*/
+        font-size: 30px;
+        font-weight: bolder;
+        text-align: center;
+        color: rgb(13, 71, 161);
+        padding-top: 60px;
+    }
+
+    #content_2{
+        /* border: 1px solid red; */
+        width: 100%;
+        height: 50%;
+        position: relative;
+    }
+    #content_2>div{
+        height: 100%;
+        float: right;
+    }
+    #login_form{
+        width: 60%;
+        height: 100%;
+        position: absolute;
+    }
+    #login_form div{
+        /* border: 1px solid red; */
+        float: left;
+        /* margin-top: 20%; */
+        /* margin-right: 10px; */
+    }
+    #id_pwd{
+        width: 55%;
+        margin-left: 10%;
+        margin-top: 10%;
+    }
+    #id_pwd>input{
+        width: 83%;
+        height: 35px;
+        margin: 5px;
+        margin-left: 35px;
+    }
+    #login_btn{
+        width: 25%;
+        height: 110px;
+        margin-left: 1%;
+        margin-top: 10%;
+    }
+    #login_btn>button{
+        width: 105px;
+        height: 95px;
+        margin-left: 15px;
+        font-size: 20px;
+        font-weight: bolder;
+        background-color: rgb(13, 71, 161);
+        color: white;
+        border: none;
+        border-radius: 15px;
+    }
+    #search_id_pwd{
+        margin-left: 17%;
+        margin-top: 10px;
+        width: 50%;
+        height: 50px;
+    }
+    #search_id_pwd>a{
+        text-decoration: none;
+        color: black;
+        font-size: 15px;
+    }
+
+    #ad{
+        width: 40%;
+        height: 100%;
+        margin: 0px;
+    }
+    #ad_1{
+        width: 85%;
+        height: 80%;
+        background-color: rgb(166, 190, 214);
+        margin: auto;
+        margin-top: 20px;
+    }
+
+    #content_3{
+        width: 100%;
+        height: 30%;
+    }
+    #content_3 p{
+        font-size: 16px;
+    }
+    #content_3 a{
+        text-decoration: none;
+        color: black;
+        font-size: 17px;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

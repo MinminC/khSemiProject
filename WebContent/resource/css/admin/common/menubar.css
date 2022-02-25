@@ -1,0 +1,82 @@
+@charset "UTF-8";
+.menubar>ul {
+        list-style-type: none;
+        padding: 0px;
+        margin: 0px;
+        width: 200px;
+        background: rgb(13, 71, 161);
+        height: 100%;
+        overflow: auto;
+        position: fixed;
+}
+
+.menubar li a {
+   text-decoration: none;
+   padding: 10px;
+   display: block;
+   color: white;
+   font-weight: bold;
+}
+
+.menubar li a:hover {
+   background: #333;
+   color: #fff;
+}
+   
+.menubar li a.home>img {
+   width: 180px;
+   height: 160px;
+}
+   
+.content {
+   margin-left: 220px;
+}
+
+#temporaryEmailBtn , .btn-area>input, #searchBtn{
+   width: 160px;
+   height: 40px;
+   background: rgb(13, 71, 161);
+   color: white;
+}
+
+.page-area a{
+   width: 40px;
+   height: 40px;
+   background: rgb(13, 71, 161);
+   color: white;
+
+}
+.content {
+        margin-left: 220px;
+}
+
+#manage{
+   list-style: none;
+   margin: 0px;
+   padding: 0px;
+}
+#manage a{
+   display: block;
+}
+#manage > li > ul {
+   list-style-type: none;
+   padding: 0px;
+   display: none;  
+}  
+#manage > li > a:hover+ul {
+   display: block;  
+}
+
+#manage > li > ul:hover {
+   display: block;  
+}
+.page_btn{
+	
+	background: rgb(13, 71, 161);
+	color: white;
+}
+
+.page_btn_disabled{
+	background: white;
+	color: rgb(13, 71, 161);
+}

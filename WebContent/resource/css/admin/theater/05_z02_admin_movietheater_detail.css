@@ -1,0 +1,104 @@
+div {
+    /*border: 1px solid black;*/
+    display: block;
+} 
+/* ------------------------------------------------ */
+/* container영역 */
+#container {
+    width: 1200px;
+    height: auto;
+    margin: auto;
+}
+#container>div{
+    float: left;
+}
+.menutab{
+    width: 20%;
+}
+
+#content_wrap{
+    width: 79%;
+   	margin-left : 250px;
+}
+#content_1{
+    width: 100%;
+    height: 100px;
+}
+#content_1>div{
+    float: left;
+}
+#title{
+    width: 100%;
+    height: 100%;
+}
+#title>h2{
+    padding-left: 35px;
+    padding-top: 27px;
+}
+#content_2{
+    width: 100%;
+    height: 30%; /*30%*/
+}
+#content_2>div{
+    float: left;
+}
+.input_info{
+    width: 70%;
+    padding-left: 60px;
+}
+#movietheater_file{
+    width: 100%;
+    height: 100%;
+    padding-left: 30px;
+}
+#movietheater_info{
+    width: 100%;
+    height: 100%;
+    line-height: 30px;
+    margin-left: 30px;
+}
+#movietheater_info>div{
+    float: left;
+}
+#input_ment{
+    width: 25%;
+    line-height: 36px;
+}
+#input_tag{
+    width: 69%;
+    line-height: 36px
+}
+#content_3{
+    width: 100%;
+    height: 50%; /*50%*/
+}
+#ex_info{
+    width: 80%;
+    margin: auto;
+}
+#ex_info>textarea{
+    width: 500px;
+    height: 80px;
+}
+#content_4{
+    width: 100%;
+    height: 90px;
+}
+#content_4>div{
+    width: 30%;
+    height: 100%;
+    margin-left: 600px;
+}
+#content_4 .btn-outline-primary{
+    color: rgb(13, 71, 161);
+    border: 1px solid rgb(13, 71, 161);
+}
+#content_4 .btn-outline-primary:hover{
+     background-color: rgb(13, 71, 161);
+     color: white;
+}
+form{
+	display:inline;
+}
+
+

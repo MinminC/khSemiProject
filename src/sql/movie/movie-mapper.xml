@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>movie-mapper</comment>
+	<entry key="selectCurrentList">
+		SELECT *      
+		FROM (SELECT ROWNUM RNUM, A.*
+		      FROM (
+		            SELECT MNO, MNAME, GENRE, RATE, NVL(ADVANCE_RATE, 0) ADVANCE_RATE
+		            FROM MOVIE 
+		            LEFT JOIN (SELECT MNO, ROUND(ALL_TICKET/(
+                                                        SELECT COUNT(*) COUNT
+                                                        FROM PAYMENT
+                                                            JOIN TICKET USING(PAY_NO)
+                                                        WHERE PAY_STATUS='Y'
+                                                        	AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+                                                    )*100,1) ADVANCE_RATE
+		                        FROM(
+		                            SELECT MNO, COUNT(MNO) ALL_TICKET
+		                            FROM PAYMENT
+		                            	JOIN TICKET USING(PAY_NO)
+		                            	JOIN SCHEDULE USING(RUN_NO)
+		                            WHERE PAY_STATUS='Y'
+		                            	AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+		                            GROUP BY MNO
+		                            )
+		                ) USING(MNO)
+		            WHERE STATUS = 'Y'
+		        ORDER BY ADVANCE_RATE DESC, MNO
+		        ) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	 <entry key="selectMovieDetail">
+		SELECT MNO, MNAME, GENRE, DIRECTOR, RTIME, RATE
+		    ,CASE WHEN RELEASE_DATE IS NULL THEN '개봉 미정'
+			    ELSE TO_CHAR(RELEASE_DATE, 'YYYY-MM-DD') 
+			    END RELEASE_DATE 
+		    , NVL(RE_AVG,0) RE_AVG, NVL(MO_LIKE, 0) MO_LIKE, NVL(MY_LIKE, 'N') MY_LIKE, SYNOPSIS, ACTOR, M.STATUS
+            , NVL(ADVANCE_RATE, 0) ADVANCE_RATE
+		FROM MOVIE M
+		LEFT JOIN (SELECT TRUNC(AVG(REVIEW_GRADE),1) RE_AVG, MNO
+		            FROM REVIEW
+		            GROUP BY MNO) R USING(MNO)
+		LEFT JOIN (SELECT MNO, COUNT(MO_LIKE_NO) MO_LIKE
+		            FROM MOVIE_LIKE
+		            GROUP BY MNO) L USING(MNO)
+		LEFT JOIN (SELECT MNO, CASE WHEN MNO = ? AND MEMBER_NO = ? THEN 'Y'
+		            ELSE 'N'
+		            END MY_LIKE
+		            FROM MOVIE_LIKE) ML USING(MNO)
+        LEFT JOIN (
+                    SELECT MNO, ROUND(ALL_TICKET/(
+                                                SELECT COUNT(*) COUNT
+                                                FROM PAYMENT
+                                                    JOIN TICKET USING(PAY_NO)
+                                                WHERE PAY_STATUS='Y'
+		 					AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+		 				)*100,1) 
+                                                ADVANCE_RATE
+                    FROM(
+                        SELECT MNO, COUNT(MNO) ALL_TICKET
+                        FROM PAYMENT
+                            JOIN TICKET USING(PAY_NO)
+                            JOIN SCHEDULE USING(RUN_NO)
+                        WHERE PAY_STATUS='Y'
+		 		AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+                        GROUP BY MNO)
+            ) USING(MNO)
+        WHERE MNO=?
+	 </entry>
+	 
+	 <entry key="selectMovieSummary">
+		SELECT MNO, MNAME, GENRE, DIRECTOR, RTIME, RATE
+		    ,CASE WHEN RELEASE_DATE IS NULL THEN '개봉 미정'
+			    ELSE TO_CHAR(RELEASE_DATE, 'YYYY-MM-DD') 
+			    END RELEASE_DATE 
+		    , NVL(RE_AVG,0) RE_AVG, NVL(MO_LIKE, 0) MO_LIKE, NVL(MY_LIKE, 'N') MY_LIKE, SYNOPSIS, ACTOR, M.STATUS, NVL(ADVANCE_RATE, 0) ADVANCE_RATE, REVIEW_COUNT
+		FROM MOVIE M
+		LEFT JOIN (SELECT TRUNC(AVG(REVIEW_GRADE),1) RE_AVG, MNO, COUNT(REVIEW_NO) REVIEW_COUNT
+		            FROM REVIEW
+		            GROUP BY MNO) R USING(MNO)
+		LEFT JOIN (SELECT MNO, COUNT(MO_LIKE_NO) MO_LIKE
+		            FROM MOVIE_LIKE
+		            GROUP BY MNO) L USING(MNO)
+		LEFT JOIN (SELECT MNO, CASE WHEN MNO=? THEN 'Y'  ELSE 'N'    END MY_LIKE
+		            FROM MOVIE_LIKE
+		            WHERE MEMBER_NO=?) ML USING(MNO)
+	    LEFT JOIN (SELECT MNO, ROUND(ALL_TICKET/(SELECT COUNT(*) COUNT
+                                        FROM PAYMENT
+                                            JOIN TICKET USING(PAY_NO)
+                                        WHERE PAY_STATUS='Y'
+                                            AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE)*100,1) ADVANCE_RATE
+                FROM(
+                    SELECT MNO, COUNT(MNO) ALL_TICKET
+                    FROM PAYMENT
+                    	JOIN TICKET USING(PAY_NO)
+                    	JOIN SCHEDULE USING(RUN_NO)
+                    WHERE PAY_STATUS='Y'
+                        AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+                    GROUP BY MNO)
+            ) USING(MNO)
+		WHERE MNO = ?
+	 </entry>
+	 
+	 <entry key="selectReviewListNo">
+		SELECT REVIEW_NO, REVIEW_CONTENT, REVIEW_GRADE, REVIEW_DATE, MEMBER_ID, REVIEW_LIKE, MY_LIKE
+		FROM(
+		SELECT REVIEW_NO, REVIEW_CONTENT, REVIEW_GRADE, REVIEW_DATE, MEMBER_ID, REVIEW_LIKE,  ROWNUM RNUM, MY_LIKE
+		FROM (
+		SELECT REVIEW_NO, REVIEW_CONTENT, REVIEW_GRADE, REVIEW_DATE, MEMBER_ID, NVL(RE_LIKE, 0) "REVIEW_LIKE", NVL(MY_LIKE,'N') MY_LIKE
+		FROM REVIEW R
+		JOIN MEMBER M USING(MEMBER_NO)
+		LEFT JOIN ( SELECT REVIEW_NO, COUNT(REVIEW_NO) RE_LIKE
+		            FROM REVIEW_LIKE
+		            GROUP BY REVIEW_NO) L USING(REVIEW_NO)
+		LEFT JOIN (SELECT REVIEW_NO, CASE WHEN MEMBER_NO = ? THEN 'Y'
+		            ELSE 'N'
+		            END MY_LIKE
+		            FROM REVIEW_LIKE
+		            WHERE MEMBER_NO = ?) RL USING(REVIEW_NO)
+		WHERE R.STATUS = 'Y' AND MNO = ?
+		ORDER BY REVIEW_NO DESC
+		) A)
+		WHERE RNUM BETWEEN ? AND ?
+	 </entry>
+	 
+	 <entry key="selectReviewListLike">
+		SELECT REVIEW_NO, REVIEW_CONTENT, REVIEW_GRADE, REVIEW_DATE, MEMBER_ID, REVIEW_LIKE, MY_LIKE
+		FROM(
+		SELECT REVIEW_NO, REVIEW_CONTENT, REVIEW_GRADE, REVIEW_DATE, MEMBER_ID, REVIEW_LIKE,  ROWNUM RNUM, MY_LIKE
+		FROM (
+		SELECT REVIEW_NO, REVIEW_CONTENT, REVIEW_GRADE, REVIEW_DATE, MEMBER_ID, NVL(RE_LIKE, 0) "REVIEW_LIKE", NVL(MY_LIKE,'N') MY_LIKE
+		FROM REVIEW R
+		JOIN MEMBER M USING(MEMBER_NO)
+		LEFT JOIN ( SELECT REVIEW_NO, COUNT(REVIEW_NO) RE_LIKE
+		            FROM REVIEW_LIKE
+		            GROUP BY REVIEW_NO) L USING(REVIEW_NO)
+		LEFT JOIN (SELECT REVIEW_NO, CASE WHEN MEMBER_NO = ? THEN 'Y'
+		            ELSE 'N'
+		            END MY_LIKE
+		            FROM REVIEW_LIKE
+		            WHERE MEMBER_NO = ?) RL USING(REVIEW_NO)
+		WHERE R.STATUS = 'Y' AND MNO = ?
+		ORDER BY REVIEW_LIKE DESC
+		) A)
+		WHERE RNUM BETWEEN ? AND ?
+	 </entry>
+	 
+	 <entry key="selectPicture"><!-- 영화 하나의 PICTURE -->
+	 	SELECT * FROM PICTURE WHERE MNO=?
+	 </entry>
+	 
+	 <entry key="selectPosterList"><!-- 영화 하나의 POSTER -->
+	 	SELECT * FROM PICTURE WHERE FILE_LEVEL=1 AND MNO=?
+	 </entry>
+	 
+	 <entry key="insertReview">
+	 	INSERT INTO REVIEW(REVIEW_NO, REVIEW_CONTENT, REVIEW_GRADE, MNO, MEMBER_NO, PAY_NO) VALUES(SEQ_RE_NO.NEXTVAL, ?, ?, ?, ?, ?)
+	 </entry>
+	 
+	 <entry key="deleteReview">
+	 	UPDATE REVIEW SET STATUS = 'N' WHERE REVIEW_NO = ?
+	 </entry>
+	 
+	 <entry key="deleteReviewLike">
+	 	DELETE FROM REVIEW_LIKE WHERE MEMBER_NO = ? AND REVIEW_NO = ?
+	 </entry>
+	 
+	 <entry key="insertReviewLike">
+	 	INSERT INTO REVIEW_LIKE VALUES(SEQ_RE_LIKE_NO.NEXTVAL, ?, ?)
+	 </entry>
+	 
+	 <entry key="deleteMovieLike">
+	 	DELETE FROM MOVIE_LIKE WHERE MNO = ? AND MEMBER_NO = ?  
+	 </entry>
+	 
+	 <entry key="insertMovieLike">
+	 	INSERT INTO MOVIE_LIKE VALUES(SEQ_MO_LIKE_NO.NEXTVAL, ?, ?)
+	 </entry>
+	 
+	 <entry key="reportReview">
+	 	INSERT INTO REPORT(REPORT_NO, REVIEW_NO, REASON) VALUES(SEQ_REPORT_NO.NEXTVAL, ?, ?)
+	 </entry>
+	 
+	 <!-- ADMIN -->
+	 <entry key="selectReportList">
+	 	SELECT REPORT_NO, REVIEW_NO, REVIEW_CONTENT, REVIEW_DATE, REASON, STATUS, RNUM
+		FROM(
+		    SELECT REPORT_NO, REVIEW_NO, REVIEW_CONTENT, REVIEW_DATE, REASON, STATUS, ROWNUM RNUM
+		    FROM (
+		        SELECT REPORT_NO, REVIEW_NO, REVIEW_CONTENT, REVIEW_DATE, REASON, RP.STATUS STATUS
+		        FROM REPORT RP
+		        JOIN REVIEW RV USING(REVIEW_NO)
+		        ORDER BY REPORT_NO DESC
+		    ) 
+		A)
+		WHERE RNUM BETWEEN ? AND ?
+	 </entry>
+	 <entry key="countReport">
+	 	SELECT COUNT(REPORT_NO) COUNT
+		FROM REPORT
+		WHERE STATUS = 'Y'
+	 </entry>
+	 <entry key="selectReportList">
+	 	SELECT REPORT_NO, REVIEW_NO, REVIEW_CONTENT, REPORT_DATE, CATEGORY_CONTENT, STATUS
+		FROM(
+		    SELECT REPORT_NO, REVIEW_NO, REVIEW_CONTENT, REPORT_DATE, CATEGORY_CONTENT, STATUS, ROWNUM RNUM
+		    FROM (
+		        SELECT REPORT_NO, REVIEW_NO, REVIEW_CONTENT, REPORT_DATE, CATEGORY_CONTENT, RP.STATUS STATUS
+		        FROM REPORT RP
+		        JOIN REVIEW RV USING(REVIEW_NO)
+		        JOIN REPORT_CATEGORY ON(REASON = CATEGORY_NO)
+		        ORDER BY REPORT_NO DESC
+		    ) 
+		A)
+		WHERE RNUM BETWEEN ? AND ?
+	 </entry>
+	 <entry key="deleteReviewByReport">
+	 	UPDATE REVIEW SET STATUS = 'N' WHERE REVIEW_NO = ?
+	 </entry>
+	 <entry key="processReport">
+	 	UPDATE REPORT SET STATUS = 'Y' WHERE REVIEW_NO = ?
+	 </entry>
+	 <entry key="holdReviewByReport">
+	 	UPDATE REPORT SET STATUS = 'H' WHERE REPORT_NO = ?
+	 </entry>
+	 <entry key="countAllMovie">
+	 	SELECT COUNT(MNO) COUNT
+		FROM MOVIE
+	 </entry>
+	 <entry key="selectMovieAdminList">
+	 	SELECT MNO, MNAME, GENRE, RTIME, RATE, STATUS, TO_CHAR(RELEASE_DATE, 'YYYY-MM-DD') RELEASE_DATE
+		FROM (
+			SELECT MNO, MNAME, GENRE, RTIME, RATE, STATUS, RELEASE_DATE, ROWNUM RNUM 
+			FROM(
+				SELECT MNO, MNAME, GENRE, RTIME, RATE, STATUS, RELEASE_DATE 
+				FROM MOVIE
+				ORDER BY MNO DESC)
+		)
+		WHERE RNUM BETWEEN ? AND ?
+	 </entry>
+	 <entry key="deleteMovie">
+	 	DELETE FROM MOVIE WHERE MNO = ? 
+	 </entry>
+	 <entry key="selectRecommendOne">
+	 	SELECT *      
+		FROM (SELECT ROWNUM RNUM, A.*
+      		  FROM (
+					SELECT MNO, MNAME, GENRE, RATE, NVL(ADVANCE_RATE, 0) ADVANCE_RATE
+					FROM MOVIE 
+					LEFT JOIN (SELECT MNO, ROUND(ALL_TICKET/(
+													SELECT COUNT(*) COUNT
+                                                	FROM PAYMENT
+                                                    	JOIN TICKET USING(PAY_NO)
+                                                	WHERE PAY_STATUS='Y'
+                                                		AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+                                                	)*100,1) ADVANCE_RATE
+		                    FROM(
+		                        SELECT MNO, COUNT(MNO) ALL_TICKET
+		                        FROM PAYMENT
+		                        	JOIN TICKET USING(PAY_NO)
+		                        	JOIN SCHEDULE USING(RUN_NO)
+		                        WHERE PAY_STATUS='Y'
+		                        	AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+		                        GROUP BY MNO)
+		            ) USING(MNO)
+					WHERE STATUS = 'Y' 
+						AND GENRE LIKE ?
+					ORDER BY ADVANCE_RATE DESC, MNO
+					) A)
+		WHERE RNUM BETWEEN ? AND ?
+	 </entry>
+	 <entry key="selectRecommendTwo">
+	 	SELECT *      
+		FROM (SELECT ROWNUM RNUM, A.*
+      		  FROM (
+					SELECT MNO, MNAME, GENRE, RATE, NVL(ADVANCE_RATE, 0) ADVANCE_RATE
+					FROM MOVIE 
+					LEFT JOIN (SELECT MNO, ROUND(ALL_TICKET/(
+													SELECT COUNT(*) COUNT
+                                                	FROM PAYMENT
+                                                    	JOIN TICKET USING(PAY_NO)
+                                                	WHERE PAY_STATUS='Y'
+                                                		AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+                                                	)*100,1) ADVANCE_RATE
+		                    FROM(
+		                        SELECT MNO, COUNT(MNO) ALL_TICKET
+		                        FROM PAYMENT
+		                        	JOIN TICKET USING(PAY_NO)
+		                        	JOIN SCHEDULE USING(RUN_NO)
+		                        WHERE PAY_STATUS='Y'
+		                        	AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+		                        GROUP BY MNO)
+		            ) USING(MNO)
+					WHERE STATUS = 'Y' 
+						AND (GENRE LIKE ? OR GENRE LIKE ?)
+					ORDER BY ADVANCE_RATE DESC, MNO
+					) A)
+		WHERE RNUM BETWEEN ? AND ?
+	 </entry>
+	 <entry key="selectRecommendThree">
+	 	SELECT *      
+		FROM (SELECT ROWNUM RNUM, A.*
+      		  FROM (
+					SELECT MNO, MNAME, GENRE, RATE, NVL(ADVANCE_RATE, 0) ADVANCE_RATE
+					FROM MOVIE 
+					LEFT JOIN (SELECT MNO, ROUND(ALL_TICKET/(
+													SELECT COUNT(*) COUNT
+                                                	FROM PAYMENT
+                                                    	JOIN TICKET USING(PAY_NO)
+                                                	WHERE PAY_STATUS='Y'
+                                                		AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+                                                	)*100,1) ADVANCE_RATE
+		                    FROM(
+		                        SELECT MNO, COUNT(MNO) ALL_TICKET
+		                        FROM PAYMENT
+		                        	JOIN TICKET USING(PAY_NO)
+		                        	JOIN SCHEDULE USING(RUN_NO)
+		                        WHERE PAY_STATUS='Y'
+		                        	AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+		                        GROUP BY MNO)
+		            ) USING(MNO)
+					WHERE STATUS = 'Y' 
+						AND (GENRE LIKE ? OR GENRE LIKE ? OR GENRE LIKE ?)
+					ORDER BY ADVANCE_RATE DESC, MNO
+					) A)
+		WHERE RNUM BETWEEN ? AND ?
+	 </entry>
+	 <entry key="countCurrentMovie">
+	 	SELECT COUNT(MNO) COUNT FROM MOVIE WHERE STATUS = 'Y'
+	 </entry>
+	 <entry key="countRecommendThree">
+	 	SELECT COUNT(MNO) COUNT FROM MOVIE WHERE STATUS = 'Y' AND (GENRE LIKE ? OR GENRE LIKE ? OR GENRE LIKE ?)
+	 </entry>
+	 <entry key="countRecommendTwo">
+	 	SELECT COUNT(MNO) COUNT FROM MOVIE WHERE STATUS = 'Y' AND (GENRE LIKE ? OR GENRE LIKE ?)
+	 </entry>
+	 <entry key="countRecommendOne">
+	 	SELECT COUNT(MNO) COUNT FROM MOVIE WHERE STATUS = 'Y' AND GENRE LIKE ?
+	 </entry>
+	 <entry key="insertMovie">
+	 	INSERT INTO MOVIE VALUES(SEQ_MO_NO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, TO_DATE(?, 'YYYYMMDD'))
+	 </entry>
+	 <entry key="insertSchedule">
+	 	INSERT INTO SCHEDULE VALUES(SEQ_RUN_NO.NEXTVAL, TO_DATE(?, 'YYYYMMDDHH24MI'), ?, SEQ_MO_NO.CURRVAL)
+	 </entry>
+	 <entry key="insertPicture">
+	 	INSERT INTO PICTURE(FILE_NO, MNO, FILE_LEVEL, ORIGIN_NAME, CHANGE_NAME, FILE_PATH) 
+	 	VALUES(SEQ_PIC_NO.NEXTVAL, SEQ_MO_NO.CURRVAL, ?, ?, ?, ?)
+	 </entry>
+	 <entry key="selectAuditoriumList">
+	 	SELECT AUDITORIUM_NO, THEATER_NAME, AUDITORIUM_NAME
+		FROM AUDITORIUM
+		JOIN THEATER USING(THEATER_NO)
+	 </entry>
+	 <entry key="selectOneMovie">
+	 	SELECT MNO, MNAME, GENRE, DIRECTOR, ACTOR, RTIME, RATE, SYNOPSIS
+		FROM MOVIE
+		WHERE MNO = ?
+	 </entry>
+	 <entry key="selectOneSchedule">
+	 	SELECT RUN_NO, TO_CHAR(RUN_SCH, 'YYYY-MM-DD HH24:MI') RUN_SCH, AUDITORIUM_NO, THEATER_NAME
+		FROM SCHEDULE 
+			JOIN AUDITORIUM USING(AUDITORIUM_NO)
+			JOIN THEATER USING(THEATER_NO)
+		WHERE MNO = ?
+		ORDER BY RUN_SCH
+	 </entry>
+	 <entry key="updateMovie">
+	 	UPDATE MOVIE SET MNAME = ?
+                , GENRE = ?
+                , DIRECTOR = ?
+                , ACTOR = ?
+                , RTIME = ?
+                , RATE = ?
+                , SYNOPSIS = ?
+                , STATUS = ?
+                , RELEASE_DATE = TO_DATE(?, 'YYYYMMDD')
+		WHERE MNO = ?
+	 </entry>
+	 <entry key="updateMovieNotRelease">
+	 	UPDATE MOVIE SET MNAME = ?
+                , GENRE = ?
+                , DIRECTOR = ?
+                , ACTOR = ?
+                , RTIME = ?
+                , RATE = ?
+                , SYNOPSIS = ?
+                , STATUS = ?
+                , RELEASE_DATE = NULL
+		WHERE MNO = ?
+	 </entry>
+	 <entry key="deleteSchedule">
+	 	DELETE FROM SCHEDULE WHERE MNO = ?
+	 </entry>
+	 <entry key="deletePicture">
+	 	DELETE FROM PICTURE WHERE MNO = ?
+	 </entry>
+	 <entry key="updateSchedule">
+	 	INSERT INTO SCHEDULE VALUES(SEQ_RUN_NO.NEXTVAL, TO_DATE(?, 'YYYYMMDDHH24MI'), ?, ?)
+	 </entry>
+	 <entry key="updatePicture">
+	 	INSERT INTO PICTURE(FILE_NO, FILE_LEVEL, MNO, ORIGIN_NAME, CHANGE_NAME, FILE_PATH) 
+	 	VALUES(SEQ_PIC_NO.NEXTVAL, ?, ?, ?, ?, ?)
+	 </entry>
+	 <entry key="insertMovieNotRelease">
+	 	INSERT INTO MOVIE(MNO, MNAME, GENRE, DIRECTOR, ACTOR, RTIME, RATE, SYNOPSIS)
+        VALUES(SEQ_MO_NO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)
+	 </entry>
+	 <entry key="countReview">
+	 	SELECT COUNT(REVIEW_NO) RE_COUNT, AVG(REVIEW_GRADE) RE_AVG
+		FROM REVIEW
+		WHERE MNO = ? AND STATUS='Y'
+	 </entry>
+	 <entry key="selectRecommendOneAll">
+	 	SELECT *      
+		FROM (SELECT ROWNUM RNUM, A.*
+      		  FROM (
+					SELECT MNO, MNAME, GENRE, RATE, NVL(ADVANCE_RATE, 0) ADVANCE_RATE
+					FROM MOVIE 
+					LEFT JOIN (SELECT MNO, ROUND(ALL_TICKET/(
+													SELECT COUNT(*) COUNT
+                                                	FROM PAYMENT
+                                                    	JOIN TICKET USING(PAY_NO)
+                                                	WHERE PAY_STATUS='Y'
+                                                		AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+                                                	)*100,1) ADVANCE_RATE
+		                    FROM(
+		                        SELECT MNO, COUNT(MNO) ALL_TICKET
+		                        FROM PAYMENT
+		                        	JOIN TICKET USING(PAY_NO)
+		                        	JOIN SCHEDULE USING(RUN_NO)
+		                        WHERE PAY_STATUS='Y'
+		                        	AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+		                        GROUP BY MNO)
+		            ) USING(MNO)
+					WHERE STATUS = 'Y' 
+						AND GENRE LIKE ?
+					ORDER BY ADVANCE_RATE DESC, MNO
+					) A)
+	 </entry>
+	 <entry key="selectRecommendTwoAll">
+	 	SELECT *      
+		FROM (SELECT ROWNUM RNUM, A.*
+      		  FROM (
+					SELECT MNO, MNAME, GENRE, RATE, NVL(ADVANCE_RATE, 0) ADVANCE_RATE
+					FROM MOVIE 
+					LEFT JOIN (SELECT MNO, ROUND(ALL_TICKET/(
+													SELECT COUNT(*) COUNT
+                                                	FROM PAYMENT
+                                                    	JOIN TICKET USING(PAY_NO)
+                                                	WHERE PAY_STATUS='Y'
+                                                		AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+                                                	)*100,1) ADVANCE_RATE
+		                    FROM(
+		                        SELECT MNO, COUNT(MNO) ALL_TICKET
+		                        FROM PAYMENT
+		                        	JOIN TICKET USING(PAY_NO)
+		                        	JOIN SCHEDULE USING(RUN_NO)
+		                        WHERE PAY_STATUS='Y'
+		                        	AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+		                        GROUP BY MNO)
+		            ) USING(MNO)
+					WHERE STATUS = 'Y' 
+						AND (GENRE LIKE ? OR GENRE LIKE ?)
+					ORDER BY ADVANCE_RATE DESC, MNO
+					) A)
+	 </entry>
+	 <entry key="selectRecommendThreeAll">
+	 	SELECT *      
+		FROM (SELECT ROWNUM RNUM, A.*
+      		  FROM (
+					SELECT MNO, MNAME, GENRE, RATE, NVL(ADVANCE_RATE, 0) ADVANCE_RATE
+					FROM MOVIE 
+					LEFT JOIN (SELECT MNO, ROUND(ALL_TICKET/(
+													SELECT COUNT(*) COUNT
+                                                	FROM PAYMENT
+                                                    	JOIN TICKET USING(PAY_NO)
+                                                	WHERE PAY_STATUS='Y'
+                                                		AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+                                                	)*100,1) ADVANCE_RATE
+		                    FROM(
+		                        SELECT MNO, COUNT(MNO) ALL_TICKET
+		                        FROM PAYMENT
+		                        	JOIN TICKET USING(PAY_NO)
+		                        	JOIN SCHEDULE USING(RUN_NO)
+		                        WHERE PAY_STATUS='Y'
+		                        	AND PAY_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+		                        GROUP BY MNO)
+		            ) USING(MNO)
+					WHERE STATUS = 'Y' 
+						AND (GENRE LIKE ? OR GENRE LIKE ? OR GENRE LIKE ?)
+					ORDER BY ADVANCE_RATE DESC, MNO
+					) A)
+	 </entry>
+	 <entry key="countMovieByKeyword">
+	 	SELECT COUNT(MNO) COUNT FROM MOVIE WHERE MNAME LIKE ?
+	 </entry>
+	 <entry key="searchMovieByKeyword">
+	 	SELECT MNO, MNAME, GENRE, RTIME, RATE, STATUS, TO_CHAR(RELEASE_DATE, 'YYYY-MM-DD') RELEASE_DATE
+		FROM (
+			SELECT MNO, MNAME, GENRE, RTIME, RATE, STATUS, RELEASE_DATE, ROWNUM RNUM 
+			FROM(
+				SELECT MNO, MNAME, GENRE, RTIME, RATE, STATUS, RELEASE_DATE 
+				FROM MOVIE
+                WHERE MNAME LIKE ?
+				ORDER BY MNO DESC)
+		)
+		WHERE RNUM BETWEEN ? AND ?
+	 </entry>
+</properties>

@@ -1,0 +1,67 @@
+@charset "UTF-8";
+.headline{
+    text-align: center;
+    margin-top:30px;
+    font-weight: 800;
+    color: RGB(13,71, 161);
+}
+.headline+a{
+    float: right;
+    text-decoration: none;
+    color:gray;
+    font-size: 14px;
+}
+.movie-one{
+    width:180px;
+    height:280px;
+    position:relative;
+    display: inline-block;
+    margin:5px;
+}
+.movie-one>img{
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    margin: auto;
+    display: inline-block;
+    position: relative;
+}
+.movie-one>.poster-button{
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    position:absolute;
+    z-index:100;
+    text-align: center;
+    line-height: 50px;
+    background:rgba(233, 233, 233, 0.5);
+    display:none;
+}
+.movie-one:hover .poster-button{
+    display:block;
+}
+
+.movie-one ul{
+    list-style: none;
+    padding:0;
+    text-align: center;
+}
+.pagination{
+    position: absolute;
+    margin:auto;
+    top:650px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#btn-list{
+    text-align: center;
+}
+#review-count{
+	width:50px;
+}
+.movie-list>.not{
+	text-align: center;
+	font-weight: 800;
+	padding: 20px;
+}

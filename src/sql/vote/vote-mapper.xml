@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>투표관련 쿼리</comment>
+
+	<entry key="voteInsert">
+		INSERT INTO VOTE(VOTE_NO, VOTE_TITLE, S_DATE, E_DATE)
+		VALUES(SEQ_VNO.NEXTVAL, ?, ?, ?) 
+	</entry>
+	
+	<entry key="voteResultInsert">
+		INSERT INTO VOTERESULT(VRE_NO, VRE_TITLE, VRE_GENRE, VRE_SYNOPSIS, VRE_FILEPATH, VOTE_NO)
+		VALUES(SEQ_VRENO.NEXTVAL, ?, ?, ?, ?, SEQ_VNO.CURRVAL)
+	</entry>
+	
+	
+	<entry key="selectList">
+		SELECT * FROM (
+		SELECT ROWNUM RNUM, A.*	FROM 
+		(SELECT * FROM VOTE V
+		JOIN (SELECT * FROM VOTERESULT VR
+		JOIN (SELECT DISTINCT VRE_NO FROM VOTERESULT VR
+		JOIN (SELECT MAX(COUNT) COUNT FROM VOTERESULT
+		GROUP BY VOTE_NO) MV ON (MV.COUNT = VR.COUNT)) C
+		ON (VR.VRE_NO = C.VRE_NO)) VR 
+		ON (V.VOTE_NO = VR.VOTE_NO)
+		WHERE E_DATE 
+		<![CDATA[
+		<
+		]]>
+		(SELECT TRUNC(SYSDATE, 'MM') FROM   DUAL)
+        ORDER BY V.S_DATE DESC) A) 
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	<entry key="selectListCount">
+		SELECT COUNT(*) COUNT FROM (
+		SELECT ROWNUM RNUM, A.*	FROM 
+		(SELECT * FROM VOTE V
+		JOIN (SELECT * FROM VOTERESULT VR
+		JOIN (SELECT DISTINCT VRE_NO FROM VOTERESULT VR
+		JOIN (SELECT MAX(COUNT) COUNT FROM VOTERESULT
+		GROUP BY VOTE_NO) MV ON (MV.COUNT = VR.COUNT)) C
+		ON (VR.VRE_NO = C.VRE_NO)) VR 
+		ON (V.VOTE_NO = VR.VOTE_NO)
+		WHERE E_DATE
+		<![CDATA[
+			<		 
+        ]]>
+		(SELECT TRUNC(SYSDATE, 'MM') FROM   DUAL)
+		ORDER BY V.S_DATE DESC) A) 
+		
+	</entry>
+	<entry key="voting">
+	SELECT V.VOTE_NO, VR.VRE_NO, V.VOTE_TITLE, VR.VRE_FILEPATH, COUNT, V.S_DATE, V.E_DATE, VR.VRE_TITLE, VR.VRE_GENRE, VR.VRE_SYNOPSIS FROM VOTE V
+	JOIN VOTERESULT VR ON (V.VOTE_NO = VR.VOTE_NO)
+	WHERE S_DATE
+	<![CDATA[
+	>
+	]]>
+	(SELECT TO_CHAR(TRUNC(LAST_DAY(ADD_MONTHS(SYSDATE, -1)))+0.99999421,'YYYYMMDD') AS "대상기간" FROM DUAL)
+    AND S_DATE 
+    <![CDATA[
+    < 
+    ]]>
+    ADD_MONTHS( TRUNC(SYSDATE,'MM'), 1 )
+	ORDER BY COUNT DESC
+	</entry>
+	
+	<entry key="countUpdate">
+	UPDATE VOTERESULT 
+	SET COUNT = COUNT +1
+	WHERE VRE_NO = ?
+	</entry>
+	
+	<entry key="userVote">
+	
+	INSERT INTO VOTEUSER
+	VALUES(?, ?)
+	
+	</entry>
+	
+	<entry key="selectVotingMember">
+	SELECT VRE_NO FROM VOTEUSER
+	WHERE MEMBER_NO = ?
+	</entry>
+	<entry key="selectVote">
+	SELECT V.VOTE_NO, VR.VRE_NO, V.VOTE_TITLE, VR.VRE_FILEPATH, COUNT, V.S_DATE, V.E_DATE, VR.VRE_TITLE, VR.VRE_GENRE, VR.VRE_SYNOPSIS
+	FROM VOTE V
+	JOIN VOTERESULT VR ON (V.VOTE_NO = VR.VOTE_NO)
+	WHERE V.VOTE_NO = ?
+	ORDER BY COUNT DESC
+	
+	</entry>
+	<entry key="selectVoting">
+	SELECT * FROM VOTE V
+	JOIN VOTERESULT VR ON (V.VOTE_NO = VR.VOTE_NO)
+	WHERE S_DATE 
+	<![CDATA[
+	>
+	]]>
+	(SELECT TO_CHAR(TRUNC(LAST_DAY(ADD_MONTHS(SYSDATE, -1)))+0.99999421,'YYYYMMDD') AS "대상기간" FROM DUAL)
+    AND S_DATE 
+    <![CDATA[
+    < 
+    ]]>
+    ADD_MONTHS( TRUNC(SYSDATE,'MM'), 1 )
+	ORDER BY COUNT DESC
+	</entry>
+	
+	<entry key="pastVoteAll">
+	SELECT VOTE_NO, VOTE_TITLE, S_DATE, E_DATE FROM VOTE
+		ORDER BY S_DATE DESC
+	</entry>
+	<entry key="voteUpdate">
+	UPDATE VOTE 
+	SET VOTE_TITLE = ?,
+		S_DATE = ?,
+		E_DATE = ?
+	WHERE VOTE_NO = ?
+	</entry>
+	<entry key="voteResultUpdate">
+	UPDATE VOTERESULT
+	SET VRE_TITLE = ?,
+		VRE_GENRE = ?,
+		VRE_SYNOPSIS = ?,
+		VRE_FILEPATH = ?
+	WHERE VRE_NO = ?
+	</entry>
+	
+	
+</properties>
