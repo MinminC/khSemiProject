@@ -21,6 +21,13 @@
  - 관리자 : 공지사항/FAQ
     - 등록, 수정, 삭제, 검색(제목/내용). 글 작성은 SmartEditor2 API 활용
 
+
+
+## Presentation
+<div align=center>
+<img src=https://github.com/MinminC/khSemiProject/blob/main/ppt/cinema-heaven.gif?raw=true">
+</div>
+                                                                                           
 ![Preview](https://raw.githubusercontent.com/MinminC/khSemiProject/main/ppt/cinema_heaven_0001.jpg)
 ![Preview](https://raw.githubusercontent.com/MinminC/khSemiProject/main/ppt/cinema_heaven_0002.jpg)
 ![Preview](https://raw.githubusercontent.com/MinminC/khSemiProject/main/ppt/cinema_heaven_0003.jpg)
